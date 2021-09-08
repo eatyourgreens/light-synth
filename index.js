@@ -22,8 +22,7 @@ const yMax = Math.max(...y)
 const yDiff = yMax - yMin
 console.log({ yMin, yMax })
 
-function playData(xValue, index, synth) {
-  const now = Tone.now()
+function playData(xValue, index, synth, now) {
   const yValue = y[index]
   const toneIndex = parseInt((yValue - yMin) * (55 / yDiff))
   const start = now + xValue
@@ -44,7 +43,7 @@ async function playScale() {
     return remainder === 0;
   });
   console.log(trimmedData.length)
-  trimmedData.forEach((xValue, index) => playData(xValue, index, synth))
+  trimmedData.forEach((xValue, index) => playData(xValue, index, synth, now + 2))
 }
 
 button.addEventListener('click', playScale);
