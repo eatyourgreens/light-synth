@@ -25,7 +25,7 @@ console.log({ yMin, yMax })
 function playData(xValue, index, synth) {
   const now = Tone.now()
   const yValue = y[index]
-  const toneIndex = parseInt((yValue - yMin) * (11 / yDiff))
+  const toneIndex = parseInt((yValue - yMin) * (55 / yDiff))
   const start = now + xValue
   console.log({ yValue, toneIndex, start })
   const tone = chromaticOctave[toneIndex]
