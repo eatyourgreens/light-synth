@@ -1,0 +1,14 @@
+{
+  "name": "light-synth",
+  "version": "0.1.0",
+  "description": "Map light curves to musical notes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jim O'Donnell",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "tone": "^14.7.77"
+  }
+}
