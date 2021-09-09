@@ -94,6 +94,7 @@ async function play() {
     return remainder === 0;
   });
   const notes = trimmedData.map((xValue, index) => noteData(xValue, filteredIndexes[index], synth, now + 2))
+  canvas.innerHTML = '';
   notes.forEach(({ tone, duration, start }, index) => {
     synth.triggerAttackRelease(tone, duration, start);
     Tone.Draw.schedule(() => {
