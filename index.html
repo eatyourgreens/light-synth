@@ -21,6 +21,10 @@
         width: 40vw;
         height: 15vw;
       }
+      text {
+        font-family: monospace;
+        font-size: .6em;
+      }
     </style>
   </head>
   <body>
@@ -48,7 +52,10 @@
       <label><input name="scale" value="chromatic" type=radio checked />Chromatic, fast</label>
       <label><input name="scale" value="minor" type=radio  />Minor, slow</label>
     </fieldset>
-    <svg id="canvas" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100"></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100">
+      <text x=5 y=10 id="time">00.00 days</text>
+      <g id='canvas'></g>
+    </svg>
     <script src="./js/Tone.js"></script>
     <script type="module" src="./index.js"></script>
   </body>

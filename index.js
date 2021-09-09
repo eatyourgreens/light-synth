@@ -5,6 +5,7 @@ let subjectID = 65562620;
 const button = document.getElementById('play');
 const canvas = document.getElementById('canvas');
 const subjectPicker = document.getElementById('subjectPicker');
+const time = document.getElementById('time');
 const radios = document.querySelectorAll('input[type=radio]');
 
 let useMinorScale = false;
@@ -117,6 +118,8 @@ async function play() {
       const xValue = x[actualIndex];
       const yValue = y[actualIndex];
       drawCircle(xValue, yValue);
+      const days = `0${parseFloat(xValue).toFixed(2)}`;
+      time.innerHTML = `${days.slice(-5)} days`;
     }, start)
   })
 }
