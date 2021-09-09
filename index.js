@@ -39,7 +39,7 @@ function onModeChange(event) {
   }
 }
 
-function playData(xValue, index, synth, now) {
+function noteData(xValue, index, synth, now) {
   const yValue = y[index]
   const tonesArray = useMinorScale ? minorOctave : chromaticOctave;
   const scaleFactor = tonesArray.length * 2;
@@ -50,7 +50,7 @@ function playData(xValue, index, synth, now) {
   const start = now + interval;
   console.log({ index, yValue, normalisedY, toneIndex, start, duration })
   const tone = tonesArray[toneIndex]
-  synth.triggerAttackRelease(tone, duration, start)
+  return({ tone, duration, start })
 }
 
 async function playScale() {
@@ -58,8 +58,11 @@ async function playScale() {
   const synth = new Tone.Synth().toDestination();
   const now = Tone.now()
   const tonesArray = useMinorScale ? minorOctave : chromaticOctave;
+  // play a descending scale as a test.
   for (let index = 0; index < tonesArray.length; index++) {
-    synth.triggerAttackRelease(tonesArray[11 - index], "8n", now + (index * 0.1))
+    const toneIndex = tonesArray.length - index;
+    const tone = tonesArray[toneIndex];
+    synth.triggerAttackRelease(tone, "8n", now + (index * 0.1))
   }
   const filteredIndexes = []
   const trimmedData = x.filter((x, index) => {
@@ -69,7 +72,8 @@ async function playScale() {
     }
     return remainder === 0;
   });
-  trimmedData.forEach((xValue, index) => playData(xValue, filteredIndexes[index], synth, now + 2))
+  const notes = trimmedData.map((xValue, index) => noteData(xValue, filteredIndexes[index], synth, now + 5))
+  notes.forEach(({ tone, duration, start }) => synth.triggerAttackRelease(tone, duration, start))
 }
 
 button.addEventListener('click', playScale);
