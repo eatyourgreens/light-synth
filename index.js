@@ -2,6 +2,7 @@ const chromaticOctave = ["C4", 'Db4', 'D4', 'Eb4', 'E4', 'F4', 'Gb4', 'G4', 'Ab5
 const minorOctave = ["C4", 'D4', 'Eb4', 'F4', 'G4', 'Ab5', 'Bb5', 'C5'];
 
 const button = document.getElementById('play');
+const canvas = document.getElementById('canvas');
 const radios = document.querySelectorAll('input[type=radio]')
 
 let useMinorScale = false
@@ -32,11 +33,27 @@ const yMin = Math.min(...y)
 const yMax = Math.max(...y)
 const yDiff = yMax - yMin
 console.log({ yMin, yMax })
+const xMin = Math.min(...x)
+const xMax = Math.max(...x)
+const xDiff = xMax - xMin
+console.log({ xMin, xMax })
 
 function onModeChange(event) {
   if (event.target.checked) {
     useMinorScale = event.target.value === 'minor';
   }
+}
+
+function drawCircle(x, y) {
+  const normalisedX = (x - xMin) / xDiff;
+  const normalisedY = (y - yMin) / yDiff;
+  const xPixels = parseInt(normalisedX * 300);
+  const yPixels = 100 - parseInt(normalisedY * 100);
+  const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+  circle.setAttribute('cx', xPixels);
+  circle.setAttribute('cy', yPixels);
+  circle.setAttribute('r', '1');
+  canvas.append(circle); 
 }
 
 function noteData(xValue, index, synth, now) {
@@ -72,8 +89,16 @@ async function playScale() {
     }
     return remainder === 0;
   });
-  const notes = trimmedData.map((xValue, index) => noteData(xValue, filteredIndexes[index], synth, now + 5))
-  notes.forEach(({ tone, duration, start }) => synth.triggerAttackRelease(tone, duration, start))
+  const notes = trimmedData.map((xValue, index) => noteData(xValue, filteredIndexes[index], synth, now + 2))
+  notes.forEach(({ tone, duration, start }, index) => {
+    synth.triggerAttackRelease(tone, duration, start);
+    Tone.Draw.schedule(() => {
+      const actualIndex = filteredIndexes[index];
+      const xValue = x[actualIndex];
+      const yValue = y[actualIndex];
+      drawCircle(xValue, yValue);
+    }, start)
+  })
 }
 
 button.addEventListener('click', playScale);

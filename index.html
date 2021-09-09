@@ -16,6 +16,11 @@
       label {
         display: block;
       }
+      svg {
+        border: 1px solid #333;
+        width: 40vw;
+        height: 15vw;
+      }
     </style>
   </head>
   <body>
@@ -35,6 +40,7 @@
       <label><input name="scale" value="chromatic" type=radio checked />Chromatic, fast</label>
       <label><input name="scale" value="minor" type=radio  />Minor, slow</label>
     </fieldset>
+    <svg id="canvas" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100"></svg>
     <script src="./js/Tone.js"></script>
     <script type="module" src="./index.js"></script>
   </body>
