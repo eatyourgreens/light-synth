@@ -1,18 +1,20 @@
 const chromaticOctave = ["C4", 'Db4', 'D4', 'Eb4', 'E4', 'F4', 'Gb4', 'G4', 'Ab5', 'A5', 'Bb5', 'B5', 'C5'];
 const minorOctave = ["C4", 'D4', 'Eb4', 'F4', 'G4', 'Ab5', 'Bb5', 'C5'];
 
+const subjectID = 65562620;
 const button = document.getElementById('play');
 const canvas = document.getElementById('canvas');
-const radios = document.querySelectorAll('input[type=radio]')
+const lightCurve = document.getElementById('lightCurve');
+const radios = document.querySelectorAll('input[type=radio]');
 
-let useMinorScale = false
+let useMinorScale = false;
 
 radios.forEach(radio => {
   radio.addEventListener('change', onModeChange);
   if (radio.checked) {
     useMinorScale = radio.value === 'minor';
   }
-})
+});
 
 const APIOptions = {
   headers: {
@@ -21,22 +23,26 @@ const APIOptions = {
   },
   method: 'GET',
   mode: 'cors'
-}
-const response = await window.fetch('https://www.zooniverse.org/api/subjects/65562620?http_cache=true', APIOptions)
-const { subjects } = await response.json()
-const [ subject ] = subjects
-const [ dataLocation ] = subject.locations.filter(location => !!location["text/plain"])
-const dataURL = dataLocation["text/plain"]
-const dataResponse = await window.fetch(dataURL, { mode: 'cors' })
-const { x, y } = await dataResponse.json()
-const yMin = Math.min(...y)
-const yMax = Math.max(...y)
-const yDiff = yMax - yMin
-console.log({ yMin, yMax })
-const xMin = Math.min(...x)
-const xMax = Math.max(...x)
-const xDiff = xMax - xMin
-console.log({ xMin, xMax })
+};
+const response = await window.fetch(`https://www.zooniverse.org/api/subjects/${subjectID}?http_cache=true`, APIOptions);
+const { subjects } = await response.json();
+const [ subject ] = subjects;
+const [ imageLocation ] = subject.locations.filter(location => !!location["image/png"]);
+const imageURL = dataLocation["image/png"];
+lightCurve.src = imageURL;
+lightCurve.alt = `Light curve for Planet Hunters TESS subject ${subjectID}.`;
+const [ dataLocation ] = subject.locations.filter(location => !!location["text/plain"]);
+const dataURL = dataLocation["text/plain"];
+const dataResponse = await window.fetch(dataURL, { mode: 'cors' });
+const { x, y } = await dataResponse.json();
+const yMin = Math.min(...y);
+const yMax = Math.max(...y);
+const yDiff = yMax - yMin;
+console.log({ yMin, yMax });
+const xMin = Math.min(...x);
+const xMax = Math.max(...x);
+const xDiff = xMax - xMin;
+console.log({ xMin, xMax });
 
 function onModeChange(event) {
   if (event.target.checked) {
