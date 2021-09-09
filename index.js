@@ -1,14 +1,15 @@
 const chromaticOctave = ["C4", 'Db4', 'D4', 'Eb4', 'E4', 'F4', 'Gb4', 'G4', 'Ab5', 'A5', 'Bb5', 'B5', 'C5'];
 const minorOctave = ["C4", 'D4', 'Eb4', 'F4', 'G4', 'Ab5', 'Bb5', 'C5'];
 
-const subjectID = 65562620;
+let subjectID = 65562620;
 const button = document.getElementById('play');
 const canvas = document.getElementById('canvas');
-const lightCurve = document.getElementById('lightCurve');
+const subjectPicker = document.getElementById('subjectPicker');
 const radios = document.querySelectorAll('input[type=radio]');
 
 let useMinorScale = false;
 
+subjectPicker.addEventListener('change', onSubjectChange);
 radios.forEach(radio => {
   radio.addEventListener('change', onModeChange);
   if (radio.checked) {
@@ -16,33 +17,8 @@ radios.forEach(radio => {
   }
 });
 
-const APIOptions = {
-  headers: {
-    'Accept': 'application/vnd.api+json; version=1',
-    'Content-Type': 'application/json'
-  },
-  method: 'GET',
-  mode: 'cors'
-};
-const response = await window.fetch(`https://www.zooniverse.org/api/subjects/${subjectID}?http_cache=true`, APIOptions);
-const { subjects } = await response.json();
-const [ subject ] = subjects;
-const [ imageLocation ] = subject.locations.filter(location => !!location["image/png"]);
-const imageURL = dataLocation["image/png"];
-lightCurve.src = imageURL;
-lightCurve.alt = `Light curve for Planet Hunters TESS subject ${subjectID}.`;
-const [ dataLocation ] = subject.locations.filter(location => !!location["text/plain"]);
-const dataURL = dataLocation["text/plain"];
-const dataResponse = await window.fetch(dataURL, { mode: 'cors' });
-const { x, y } = await dataResponse.json();
-const yMin = Math.min(...y);
-const yMax = Math.max(...y);
-const yDiff = yMax - yMin;
-console.log({ yMin, yMax });
-const xMin = Math.min(...x);
-const xMax = Math.max(...x);
-const xDiff = xMax - xMin;
-console.log({ xMin, xMax });
+let x, y, xMin, xMax, xDiff, yMin, yMax, yDiff;
+await fetchSubject(subjectID);
 
 function onModeChange(event) {
   if (event.target.checked) {
@@ -50,6 +26,39 @@ function onModeChange(event) {
   }
 }
 
+async function fetchSubject(subjectID) {
+  const APIOptions = {
+    headers: {
+      'Accept': 'application/vnd.api+json; version=1',
+      'Content-Type': 'application/json'
+    },
+    method: 'GET',
+    mode: 'cors'
+  };
+  const response = await window.fetch(`https://www.zooniverse.org/api/subjects/${subjectID}?http_cache=true`, APIOptions);
+  const { subjects } = await response.json();
+  const [ subject ] = subjects;
+  const [ imageLocation ] = subject.locations.filter(location => !!location["image/png"]);
+  const imageURL = imageLocation["image/png"];
+  lightCurve.src = imageURL;
+  lightCurve.alt = `Light curve for Planet Hunters TESS subject ${subjectID}.`;
+  const [ dataLocation ] = subject.locations.filter(location => !!location["text/plain"]);
+  const dataURL = dataLocation["text/plain"];
+  const dataResponse = await window.fetch(dataURL, { mode: 'cors' });
+  ({ x, y } = await dataResponse.json());
+  yMin = Math.min(...y);
+  yMax = Math.max(...y);
+  yDiff = yMax - yMin;
+  console.log({ yMin, yMax });
+  xMin = Math.min(...x);
+  xMax = Math.max(...x);
+  xDiff = xMax - xMin;
+  console.log({ xMin, xMax });
+}
+async function onSubjectChange(event) {
+  subjectID = event.target.value;
+  await fetchSubject(subjectID)
+}
 function drawCircle(x, y) {
   const normalisedX = (x - xMin) / xDiff;
   const normalisedY = (y - yMin) / yDiff;
@@ -65,7 +74,7 @@ function drawCircle(x, y) {
 function noteData(xValue, index, synth, now) {
   const yValue = y[index]
   const tonesArray = useMinorScale ? minorOctave : chromaticOctave;
-  const scaleFactor = tonesArray.length * 2;
+  const scaleFactor = tonesArray.length;
   const duration = useMinorScale ? "4n": "8n";
   const normalisedY = (yValue - yMin) / yDiff;
   const toneIndex = parseInt(normalisedY * scaleFactor);
