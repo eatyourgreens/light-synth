@@ -78,7 +78,7 @@ function noteData(xValue, index, synth, now) {
   const duration = useMinorScale ? "4n": "8n";
   const normalisedY = (yValue - yMin) / yDiff;
   const toneIndex = parseInt(normalisedY * scaleFactor);
-  const interval = useMinorScale ? xValue * 4 : xValue * 2;
+  const interval = useMinorScale ? xValue * 1.5 : xValue;
   const start = now + interval;
   console.log({ index, yValue, normalisedY, toneIndex, start, duration })
   const tone = tonesArray[toneIndex]
