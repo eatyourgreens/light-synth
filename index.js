@@ -46,7 +46,7 @@ function playData(xValue, index, synth, now) {
   const duration = useMinorScale ? "4n": "8n";
   const normalisedY = (yValue - yMin) / yDiff;
   const toneIndex = parseInt(normalisedY * scaleFactor);
-  const interval = useMinorScale ? xValue * 2 : xValue;
+  const interval = useMinorScale ? xValue * 4 : xValue * 2;
   const start = now + interval;
   console.log({ index, yValue, normalisedY, toneIndex, start, duration })
   const tone = tonesArray[toneIndex]
@@ -63,7 +63,7 @@ async function playScale() {
   }
   const filteredIndexes = []
   const trimmedData = x.filter((x, index) => {
-    const remainder = index % 20;
+    const remainder = index % 10;
     if (remainder === 0) {
       filteredIndexes.push(index)
     }
