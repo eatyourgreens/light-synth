@@ -10,6 +10,12 @@
         max-width: 40vw;
         max-height: 40vh;
       }
+      fieldset {
+        max-width: 40vw;
+      }
+      label {
+        display: block;
+      }
     </style>
   </head>
   <body>
@@ -24,6 +30,11 @@
         />
       </a>
     </p>
+    <fieldset>
+      <legend>Mode</legend>
+      <label><input name="scale" value="chromatic" type=radio checked />Chromatic, fast</label>
+      <label><input name="scale" value="minor" type=radio  />Minor, slow</label>
+    </fieldset>
     <script src="./js/Tone.js"></script>
     <script type="module" src="./index.js"></script>
   </body>
