@@ -42,7 +42,7 @@ function onModeChange(event) {
 function playData(xValue, index, synth, now) {
   const yValue = y[index]
   const tonesArray = useMinorScale ? minorOctave : chromaticOctave;
-  const scaleFactor = tonesArray.length * 5;
+  const scaleFactor = tonesArray.length * 2;
   const duration = useMinorScale ? "4n": "8n";
   const normalisedY = (yValue - yMin) / yDiff;
   const toneIndex = parseInt(normalisedY * scaleFactor);
